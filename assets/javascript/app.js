@@ -1,35 +1,54 @@
+$(document).ready(function() {
+
 //Global Variables//
+var correct = 0;
+var wrong = 0;
+var unanswered = 0;
+var currentQuestion = 0;
+var quizOver = false;
 
 
-//Question & Answers Objects
-function Hike(question, answer) {
-  this.question = question;
-  this.answer = answer;
+var triviaQuestions = [{ question: "What year was the National Park Trail System established?",
+    choices: ['1965','1942', '1981', '1914'], correctAnswer: 0}, //what is the index position of the correct choice
+
+    {question: "What is the longest hiking trail in the USA?", choices: ["Continental Divide Trail","Appalachian Trail", "Ozark Highlands Trail", "Pacific Crest Trail"], correctAnswer: 0},
+    
+    {question: 'What is another term used for "hiking" in other countries?',
+    choices: ["Trekking", "Bush walking", "Tramping", "Hill walking", "All of the above."],
+    correctAnswer: 1},
+    
+    {question: "What does a trail sign tell you?", choices: ["The difficulty of the hike.","The expected trail conditions.", "The trail name and most often mileage as well.","The expected weather conditions"], correctAnswer: 2},
+    
+    {question: "What is something a hiker should always have before going on his first hike?", choices: ["Hiking clothing", "Hiking boots", "Sunscreen", "Sunglasses"], correctAnswer: 1}
+    ];
+
+//Initialize Game
+function Initialize() {
+	$("#question").html("<button id='startBtn'>Start Game</button>");
+	$("#choices").html("");
+	console.log ("Initialize was called")
 };
 
-function Answers(answer, option1, option2, option3) {
-  this.answer = answer;
-  this.option1 = option1;
-  this.option2 = option2;
-  this.option3 = option3;
-};
+// This displays the current question AND the choices
+function displayCurrentQuestion() {
+   var question = triviaQuestions[currentQuestion].question;
+    var questionArea = $("#question");
+    var choiceArea = $("#choices");
+    var numChoices = triviaQuestions[currentQuestion].choices.length;
 
-var hike1 = new Hike('How much water should you bring on a typical hike?', q1Answers );
-var hike2 = new Hike('What is the easiest hiking trail in the Rocky Mountain National Park?', q2Answers);
+    // Set the questionArea text to the current question
+    $(questionArea).html("<p><strong>" + question + "</strong></p>");
+    $(choiceArea).html("");
 
-var q1Answers = new Answers('1 litre', '1 gallon', '8 ounces','16 ounces');
-var q2Answers = new Answers('Coyote Valley', 'La Poudre Pass','Granit Falls','Longs Peak');
+    var choice;
+    for (i = 0; i < numChoices; i++) {
+        choice = triviaQuestions[currentQuestion].choices[i];
+        $('<button class="choiceBtn" value=' + i + '>' + choice + '</button>').appendTo(choiceArea);
+    }
+}
 
-$("#question").html("<p><strong>"+hike1.question+"</strong></p>");
-
-//From DrinkList exercise, lists all items in object as <li>
-// not sure i need this part of the example:  $("#choices").html(q1Answers);
-
-$.each(q1Answers, function(value) {
-  var hikeAnswers = $("<button>");
-  hikeAnswers.html(q1Answers[value]);
-  $("#choices").append(hikeAnswers)
-});
+Initialize();
+$(document).on("click", "#startBtn", function() {
 
 //Timer Countdown
 var count=16;
@@ -40,9 +59,39 @@ function timer() {
   if (count < 0)
   {
      clearInterval(counter);
-     //show correct answer
+     // Initialize();
      //then go onto next question automatically
      return;
   }
-	$("#countdown").html(count);
-}
+	$("#countdown").html("Seconds Remaining: " + count);
+};
+
+ displayCurrentQuestion();
+
+ // On clicking a choice, display if it was the correct answer or not
+    $(document).on("click", ".choiceBtn", function () {
+        if (!quizOver) {
+
+            value = $(".choiceBtn").val();
+
+                if (value == triviaQuestions[currentQuestion].correctAnswer) {
+                    correct++;
+                    console.log("You guessed correctly!")
+                } else {
+                	console.log("Incorrect guess.")
+                }
+				
+				clearInterval(counter);
+                currentQuestion++; // Since the first question was already displayed on the start button click
+
+                if (currentQuestion < triviaQuestions.length) {
+ 
+                    displayCurrentQuestion();
+                } else {
+                    displayScore();
+                }
+      		}
+      	});         
+      
+}); //document.onclick Start Button
+}); // document.ready closing brackets
