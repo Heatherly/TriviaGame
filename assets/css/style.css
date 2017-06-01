@@ -1,0 +1,51 @@
+html {position: relative;}
+
+body {
+	background: url(../images/tree_bark.png);
+}
+
+p, button {
+	font-family: 'Lora', serif;
+	font-size: 18px;
+}
+
+button {
+	    display: block;
+	    text-align: center;
+	    margin: 10px auto;
+	    padding: 10px;
+	    background-color: #DAF7A6;
+	    border: 1px solid #DAF7A6;
+}
+
+button:hover { 
+    background-color: yellow;
+    border: 1px solid black;
+}
+.main-content {
+	background-color: #DAF7A6;
+	opacity: 0.8;
+	min-height: 400px;
+	padding: 20px;
+}
+
+.headline {
+	background-color:#196F3D;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	font-family: 'Changa', sans-serif;
+	font-size: 48px;
+	color: #fff;
+	margin: 20px auto 0;
+	padding: 15px;
+}
+.timer {
+	font-family: 'Changa', sans-serif;
+	font-size: 24px;
+	margin: 10px auto;
+	}
+footer {
+	margin: 20px auto;
+	/*text-align: center;*/
+	position: fixed;
+	bottom: 0;
