@@ -9,33 +9,25 @@ var intervalId;
 var clockRunning = false;
 
 var triviaQuestions = [{ question: "What year was the National Park Trail System established?",
-    choices: ['1914', '1942', '1968', '1981'], correctAnswer: 2}, //what is the index position of the correct choice
+    choices: ['1914', '1942', '1968', '1981'], correctAnswer: 2, picture: '1968trailsystem.jpg'}, //what is the index position of the correct choice
 
-    {question: "What is the longest hiking trail in the USA?", choices: ["Appalachian Trail", "Continental Divide Trail", "Ozark Highlands Trail", "Pacific Crest Trail"], correctAnswer: 1},
+    {question: "What is the longest hiking trail in the USA?", choices: ["Appalachian Trail", "Continental Divide Trail", "Ozark Highlands Trail", "Pacific Crest Trail"], correctAnswer: 1, picture: 'cdt.jpg'},
     
     {question: 'What is another term used for "hiking" in other countries?',
     choices: ["Trekking", "Bush walking", "Tramping", "Hill walking", "All of the above."],
-    correctAnswer: 4},
+    correctAnswer: 4, picture: 'trailhiking.jpg'},
     
-    {question: "What does a trail sign tell you?", choices: ["The difficulty of the hike.","The expected trail conditions.", "The trail name and most often mileage as well.","The expected weather conditions"], correctAnswer: 2},
+    {question: "What does a trail sign tell you?", choices: ["The difficulty of the hike.","The expected trail conditions.", "The trail name and most often mileage as well.","The expected weather conditions"], correctAnswer: 2, picture: 'trailsign.jpg'},
     
-    {question: "What is something a hiker should always have before going on his first hike?", choices: ["Hiking clothing", "Hiking boots", "Sunscreen", "Sunglasses"], correctAnswer: 1}
+    {question: "What is something a hiker should always have before going on his first hike?", choices: ["Hiking clothing", "Hiking boots", "Sunscreen", "Sunglasses"], correctAnswer: 1, picture: 'hikingboots.jpg'}
     ];
 
 //DEFINE FUNCTIONS
 //Initialize Game
 function Initialize() {
+  clearScreen();
 	$("#question").html("<button id='startBtn'>Start Game</button>");
-	$("#choices").html("");
-  $("#answerPic").html("");
-};
-
-//Clear divs function
-function clearScreen() {
-  $("#question").html("");
-  $("#choices").html("");
-  // $("#answer").html("")
-  // $("#answerPic").html("");
+	$("#countdown").empty();
 };
 
 //Display correct answer and image 
@@ -44,24 +36,32 @@ function displayCorrect() {
     var selectedChoice = triviaQuestions[currentQuestion].choices
     var theAnswer = triviaQuestions[currentQuestion].correctAnswer
         $("#answer").html("Correct! " + selectedChoice[theAnswer]);
-        $("#answerPic").html("Display picture here");
-        // console.log("display answer");
-  };
-//If wrong guess or no guess
+        $("#answerPic").html('<img class="answerPic" src="assets/images/' + triviaQuestions[currentQuestion].picture + '">');
+        };
+
+//If wrong guess or no guess at all (time ran out)
 function displayIncorrect() {
   clearScreen();
     var selectedChoice = triviaQuestions[currentQuestion].choices
     var theAnswer = triviaQuestions[currentQuestion].correctAnswer
         $("#answer").html("Incorrect. The correct answer was: " + selectedChoice[theAnswer]);
-        $("#answerPic").html("Display correct picture here");
-        // console.log("display answer");
+        $("#answerPic").html('<img class="answerPic" src="assets/images/' + triviaQuestions[currentQuestion].picture + '">');
+};
+
+//Clear divs function
+function clearScreen() {
+  // console.log("I'm here!")
+  $("#answer").empty()
+  $("#answerPic").empty();
+  $("#question").empty();
+  $("#choices").empty();
 };
 
 //Timer Countdown object. Modeled after stopwatch exercise
 var timeCountdown = {
-  time: 16,
+  time: 10,
   reset: function() {
-    timeCountdown.time = 16;
+    timeCountdown.time = 10;
     $("#countdown").html("Seconds Remaining: " + timeCountdown.time);
     clearInterval(intervalId);
     clockRunning = false;
@@ -96,6 +96,9 @@ var timeCountdown = {
 
 // This displays the current question and the choices
 function displayCurrentQuestion() {
+  $("#answer").empty()
+  $("#answerPic").empty();
+
   var question = triviaQuestions[currentQuestion].question;
   var questionArea = $("#question");
   var choiceArea = $("#choices");
@@ -103,7 +106,6 @@ function displayCurrentQuestion() {
 
   // Set the questionArea text to the current question
     $(questionArea).html("<p><strong>" + question + "</strong></p>");
-    $(choiceArea).html("");
 
   //assign value to choice button based on index position
   var choice;
@@ -125,18 +127,29 @@ function nextQuestion() {
         displayCurrentQuestion()//runs first
         timeCountdown.reset();//runs second
         timeCountdown.start();//runs third
-        },5000); //wait 5 seconds
-           
-      } else {
-        displayScore();
-      }
+        },3000); //wait 5 seconds
+
+     } else {
+        // console.log("in the ELSE")
+        setTimeout(function(){
+        displayScore();//runs second
+        },3000); //wait 5 seconds
+    }
 };
 
+//Display score at the end of game
 function displayScore () {
   clearScreen ();
   $("#countdown").html("<p>Correct Answers: "+ correct + "</p>" +"<p>Incorrect Answers: "+ wrong + "</p>" + "<p>Unanswered: "+ unanswered + "</p>")
+  newGame();
+};
 
-}
+function newGame() {
+  $("#answer").html('<button id="newGameBtn">New Game ?</button>')
+  $("#newGameBtn").on("click", function() {
+    Initialize();
+    });
+};
 
 //BEGIN THE GAME!
 Initialize();
@@ -152,9 +165,8 @@ timeCountdown.start();
 
     var getValue = $(this).attr('data-value');
       
-        console.log(getValue)
-        console.log(triviaQuestions[currentQuestion].correctAnswer)
-      
+        // console.log(getValue)
+        // console.log(triviaQuestions[currentQuestion].correctAnswer)
       if (getValue == triviaQuestions[currentQuestion].correctAnswer) {
           timeCountdown.stop();
           correct++;
@@ -162,7 +174,6 @@ timeCountdown.start();
           displayCorrect();
           console.log("You guessed correctly!")
       } 
-      
       else if (getValue !== triviaQuestions[currentQuestion].correctAnswer) {
           timeCountdown.stop();
           wrong++;
@@ -170,8 +181,9 @@ timeCountdown.start();
           displayIncorrect();
           console.log("Incorrect guess.")
       };
+      
+      nextQuestion();
 
-        nextQuestion();
     });         
       
 }); //document.onclick Start Button

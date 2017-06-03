@@ -20,7 +20,20 @@ button {
 
 button:hover { 
     background-color: yellow;
-    border: 1px solid black;
+    border: 1px solid black;}
+
+#startBtn, #newGameBtn {
+	    display: block;
+	    text-align: center;
+	    font-weight: bold;
+	    font-size: 15;
+	    margin: 30px auto 10px;
+	    padding: 10px;
+	    background-color: #FFFFFF;
+	    border: 1px solid #196F3D;
+}
+#startBtn:hover, #newGameBtn:hover {
+    background-color: yellow;
 }
 .main-content {
 	background-color: #DAF7A6;
@@ -50,7 +63,7 @@ button:hover {
 	font-weight: bold;
 }
 
-#answerPic {
+.answerPic {
 	border: 1px solid #196F3D;
 	margin: 10px;
 }
