@@ -1,7 +1,7 @@
 html {position: relative;}
 
 body {
-	background: url(../images/tree_bark.png);
+	background: url(../images/walnut.jpg);
 }
 
 p, button {
@@ -37,7 +37,6 @@ button:hover {
 }
 .main-content {
 	background-color: #DAF7A6;
-	opacity: 0.8;
 	min-height: 400px;
 	padding: 20px;
 }
@@ -48,7 +47,7 @@ button:hover {
 	border-top-right-radius: 5px;
 	font-family: 'Changa', sans-serif;
 	font-size: 48px;
-	color: #fff;
+	color: #DAF7A6;
 	margin: 20px auto 0;
 	padding: 15px;
 }
@@ -69,7 +68,7 @@ button:hover {
 }
 
 footer {
-	margin: 20px auto;
-	/*text-align: center;*/
-	position: fixed;
-	bottom: 0;
+	text-align: center;
+	font-size: 12px;
+	color: #DAF7A6;
+	margin: 20px;

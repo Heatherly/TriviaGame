@@ -50,7 +50,6 @@ function displayIncorrect() {
 
 //Clear divs function
 function clearScreen() {
-  // console.log("I'm here!")
   $("#answer").empty()
   $("#answerPic").empty();
   $("#question").empty();
@@ -96,9 +95,9 @@ var timeCountdown = {
 
 // This displays the current question and the choices
 function displayCurrentQuestion() {
-  $("#answer").empty()
-  $("#answerPic").empty();
-
+  // $("#answer").empty()
+  // $("#answerPic").empty();
+clearScreen();
   var question = triviaQuestions[currentQuestion].question;
   var questionArea = $("#question");
   var choiceArea = $("#choices");
@@ -130,9 +129,8 @@ function nextQuestion() {
         },3000); //wait 5 seconds
 
      } else {
-        // console.log("in the ELSE")
         setTimeout(function(){
-        displayScore();//runs second
+        displayScore();
         },3000); //wait 5 seconds
     }
 };
@@ -145,9 +143,18 @@ function displayScore () {
 };
 
 function newGame() {
-  $("#answer").html('<button id="newGameBtn">New Game ?</button>')
+  $("#answer").html('<button id="newGameBtn">New Game?</button>')
   $("#newGameBtn").on("click", function() {
-    Initialize();
+      $("#countdown").empty();
+      correct = 0;
+      wrong = 0;
+      unanswered = 0;
+      currentQuestion = 0;
+      intervalId;
+      clockRunning = false;
+      timeCountdown.time = 11;
+      displayCurrentQuestion();
+      timeCountdown.start();
     });
 };
 
