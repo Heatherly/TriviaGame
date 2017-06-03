@@ -44,6 +44,17 @@ button:hover {
 	font-size: 24px;
 	margin: 10px auto;
 	}
+
+#answer {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+#answerPic {
+	border: 1px solid #196F3D;
+	margin: 10px;
+}
+
 footer {
 	margin: 20px auto;
 	/*text-align: center;*/

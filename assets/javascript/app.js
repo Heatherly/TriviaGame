@@ -27,32 +27,34 @@ var triviaQuestions = [{ question: "What year was the National Park Trail System
 function Initialize() {
 	$("#question").html("<button id='startBtn'>Start Game</button>");
 	$("#choices").html("");
-	console.log ("Initialize was called")
+  $("#answerPic").html("");
 };
 
 //Clear divs function
 function clearScreen() {
   $("#question").html("");
   $("#choices").html("");
-}
+  // $("#answer").html("")
+  // $("#answerPic").html("");
+};
 
 //Display correct answer and image 
 function displayCorrect() {
   clearScreen();
     var selectedChoice = triviaQuestions[currentQuestion].choices
     var theAnswer = triviaQuestions[currentQuestion].correctAnswer
-        $("#question").html("Correct! " + selectedChoice[theAnswer]);
-        $("#choices").html("Display picture here");
-        console.log("display answer");
+        $("#answer").html("Correct! " + selectedChoice[theAnswer]);
+        $("#answerPic").html("Display picture here");
+        // console.log("display answer");
   };
 //If wrong guess or no guess
 function displayIncorrect() {
   clearScreen();
     var selectedChoice = triviaQuestions[currentQuestion].choices
     var theAnswer = triviaQuestions[currentQuestion].correctAnswer
-        $("#question").html("Incorrect. The correct answer was: " + selectedChoice[theAnswer]);
-        $("#choices").html("Display correct picture here");
-        console.log("display answer");
+        $("#answer").html("Incorrect. The correct answer was: " + selectedChoice[theAnswer]);
+        $("#answerPic").html("Display correct picture here");
+        // console.log("display answer");
 };
 
 //Timer Countdown object. Modeled after stopwatch exercise
@@ -67,13 +69,13 @@ var timeCountdown = {
   start: function() {
       if (!clockRunning) {
         intervalId = setInterval(timeCountdown.count, 1000) //everything here is in the object timeCountdown
-        console.log("clock is working")
+        // console.log("clock is working")
         clockRunning = true; //this turns on the clock only once
       }
   },
   stop: function() {
     clearInterval(intervalId);
-    console.log("clock is stopped");
+    // console.log("clock is stopped");
     clockRunning = false;
   },
 
@@ -106,8 +108,12 @@ function displayCurrentQuestion() {
   //assign value to choice button based on index position
   var choice;
     for (i = 0; i < numChoices; i++) {
-        choice = triviaQuestions[currentQuestion].choices[i];
-        $('<button class="choiceBtn" value=' + i + '>' + choice + '</button>').appendTo(choiceArea);
+        choiceNum = triviaQuestions[currentQuestion].choices[i];
+        var choicesBtn = $("<button>")
+        choicesBtn.addClass("choiceBtn");
+        choicesBtn.attr("data-value", i);
+        choicesBtn.text(choiceNum);
+        $(choiceArea).append(choicesBtn);
     }
 };
 
@@ -142,12 +148,14 @@ timeCountdown.start();
  displayCurrentQuestion();
 
 // On clicking a choice, display if it was the correct answer or not
-    $(document).on("click", ".choiceBtn", function () {
-      value = $(".choiceBtn").val();
+    $(document).on('click', '.choiceBtn', function () {
 
-      if (value == triviaQuestions[currentQuestion].correctAnswer) {
-        console.log($(".choiceBtn").val())
+    var getValue = $(this).attr('data-value');
       
+        console.log(getValue)
+        console.log(triviaQuestions[currentQuestion].correctAnswer)
+      
+      if (getValue == triviaQuestions[currentQuestion].correctAnswer) {
           timeCountdown.stop();
           correct++;
           clearScreen();
@@ -155,9 +163,7 @@ timeCountdown.start();
           console.log("You guessed correctly!")
       } 
       
-      else if (value != triviaQuestions[currentQuestion].correctAnswer) {
-        console.log($(".choiceBtn").val())
-      
+      else if (getValue !== triviaQuestions[currentQuestion].correctAnswer) {
           timeCountdown.stop();
           wrong++;
           clearScreen();
