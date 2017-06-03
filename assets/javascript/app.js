@@ -5,23 +5,24 @@ var correct = 0;
 var wrong = 0;
 var unanswered = 0;
 var currentQuestion = 0;
-var quizOver = false;
-
+var intervalId;
+var clockRunning = false;
 
 var triviaQuestions = [{ question: "What year was the National Park Trail System established?",
-    choices: ['1965','1942', '1981', '1914'], correctAnswer: 0}, //what is the index position of the correct choice
+    choices: ['1914', '1942', '1965', '1981'], correctAnswer: 2}, //what is the index position of the correct choice
 
-    {question: "What is the longest hiking trail in the USA?", choices: ["Continental Divide Trail","Appalachian Trail", "Ozark Highlands Trail", "Pacific Crest Trail"], correctAnswer: 0},
+    {question: "What is the longest hiking trail in the USA?", choices: ["Appalachian Trail", "Continental Divide Trail", "Ozark Highlands Trail", "Pacific Crest Trail"], correctAnswer: 1},
     
     {question: 'What is another term used for "hiking" in other countries?',
     choices: ["Trekking", "Bush walking", "Tramping", "Hill walking", "All of the above."],
-    correctAnswer: 1},
+    correctAnswer: 4},
     
     {question: "What does a trail sign tell you?", choices: ["The difficulty of the hike.","The expected trail conditions.", "The trail name and most often mileage as well.","The expected weather conditions"], correctAnswer: 2},
     
     {question: "What is something a hiker should always have before going on his first hike?", choices: ["Hiking clothing", "Hiking boots", "Sunscreen", "Sunglasses"], correctAnswer: 1}
     ];
 
+//DEFINE FUNCTIONS
 //Initialize Game
 function Initialize() {
 	$("#question").html("<button id='startBtn'>Start Game</button>");
@@ -29,69 +30,143 @@ function Initialize() {
 	console.log ("Initialize was called")
 };
 
-// This displays the current question AND the choices
-function displayCurrentQuestion() {
-   var question = triviaQuestions[currentQuestion].question;
-    var questionArea = $("#question");
-    var choiceArea = $("#choices");
-    var numChoices = triviaQuestions[currentQuestion].choices.length;
+//Clear divs function
+function clearScreen() {
+  $("#question").html("");
+  $("#choices").html("");
+}
 
-    // Set the questionArea text to the current question
+//Display correct answer and image 
+function displayCorrect() {
+  clearScreen();
+    var selectedChoice = triviaQuestions[currentQuestion].choices
+    var theAnswer = triviaQuestions[currentQuestion].correctAnswer
+        $("#question").html("Correct! " + selectedChoice[theAnswer]);
+        $("#choices").html("Display picture here");
+        console.log("display answer");
+  };
+//If wrong guess or no guess
+function displayIncorrect() {
+  clearScreen();
+    var selectedChoice = triviaQuestions[currentQuestion].choices
+    var theAnswer = triviaQuestions[currentQuestion].correctAnswer
+        $("#question").html("Incorrect. The correct answer was: " + selectedChoice[theAnswer]);
+        $("#choices").html("Display correct picture here");
+        console.log("display answer");
+};
+
+//Timer Countdown object. Modeled after stopwatch exercise
+var timeCountdown = {
+  time: 16,
+  reset: function() {
+    timeCountdown.time = 16;
+    $("#countdown").html("Seconds Remaining: " + timeCountdown.time);
+    clearInterval(intervalId);
+    clockRunning = false;
+  },
+  start: function() {
+      if (!clockRunning) {
+        intervalId = setInterval(timeCountdown.count, 1000) //everything here is in the object timeCountdown
+        console.log("clock is working")
+        clockRunning = true; //this turns on the clock only once
+      }
+  },
+  stop: function() {
+    clearInterval(intervalId);
+    console.log("clock is stopped");
+    clockRunning = false;
+  },
+
+  count: function() {
+      timeCountdown.time--;
+      currentTime = timeCountdown.time;
+      //when time runs out...
+      if (currentTime === 0) {
+        timeCountdown.stop();
+        unanswered++;
+        clearScreen();
+        displayIncorrect();
+        nextQuestion();
+      }
+    $("#countdown").html("Seconds Remaining: " + currentTime);
+  },
+};
+
+// This displays the current question and the choices
+function displayCurrentQuestion() {
+  var question = triviaQuestions[currentQuestion].question;
+  var questionArea = $("#question");
+  var choiceArea = $("#choices");
+  var numChoices = triviaQuestions[currentQuestion].choices.length;
+
+  // Set the questionArea text to the current question
     $(questionArea).html("<p><strong>" + question + "</strong></p>");
     $(choiceArea).html("");
 
-    var choice;
+  //assign value to choice button based on index position
+  var choice;
     for (i = 0; i < numChoices; i++) {
         choice = triviaQuestions[currentQuestion].choices[i];
         $('<button class="choiceBtn" value=' + i + '>' + choice + '</button>').appendTo(choiceArea);
     }
+};
+
+//Display next question
+function nextQuestion() {
+  currentQuestion++;
+     if (currentQuestion < triviaQuestions.length) {
+        setTimeout(function(){
+        displayCurrentQuestion()//runs first
+        timeCountdown.reset();//runs second
+        timeCountdown.start();//runs third
+        },5000); //wait 5 seconds
+           
+      } else {
+        displayScore();
+      }
+};
+
+function displayScore () {
+  clearScreen ();
+  $("#countdown").html("<p>Correct Answers: "+ correct + "</p>" +"<p>Incorrect Answers: "+ wrong + "</p>" + "<p>Unanswered: "+ unanswered + "</p>")
+
 }
 
+//BEGIN THE GAME!
 Initialize();
+
 $(document).on("click", "#startBtn", function() {
 
-//Timer Countdown
-var count=16;
-var counter=setInterval(timer, 1000); //1000 will run the function timer every 1 second
-
-function timer() {
-  count=count-1;
-  if (count < 0)
-  {
-     clearInterval(counter);
-     // Initialize();
-     //then go onto next question automatically
-     return;
-  }
-	$("#countdown").html("Seconds Remaining: " + count);
-};
+timeCountdown.start();
 
  displayCurrentQuestion();
 
- // On clicking a choice, display if it was the correct answer or not
+// On clicking a choice, display if it was the correct answer or not
     $(document).on("click", ".choiceBtn", function () {
-        if (!quizOver) {
+      value = $(".choiceBtn").val();
 
-            value = $(".choiceBtn").val();
+      if (value == triviaQuestions[currentQuestion].correctAnswer) {
+        console.log($(".choiceBtn").val())
+      
+          timeCountdown.stop();
+          correct++;
+          clearScreen();
+          displayCorrect();
+          console.log("You guessed correctly!")
+      } 
+      
+      else if (value != triviaQuestions[currentQuestion].correctAnswer) {
+        console.log($(".choiceBtn").val())
+      
+          timeCountdown.stop();
+          wrong++;
+          clearScreen();
+          displayIncorrect();
+          console.log("Incorrect guess.")
+      };
 
-                if (value == triviaQuestions[currentQuestion].correctAnswer) {
-                    correct++;
-                    console.log("You guessed correctly!")
-                } else {
-                	console.log("Incorrect guess.")
-                }
-				
-				clearInterval(counter);
-                currentQuestion++; // Since the first question was already displayed on the start button click
-
-                if (currentQuestion < triviaQuestions.length) {
- 
-                    displayCurrentQuestion();
-                } else {
-                    displayScore();
-                }
-      		}
-      	});         
+        nextQuestion();
+    });         
       
 }); //document.onclick Start Button
 }); // document.ready closing brackets
