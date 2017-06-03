@@ -9,7 +9,7 @@ var intervalId;
 var clockRunning = false;
 
 var triviaQuestions = [{ question: "What year was the National Park Trail System established?",
-    choices: ['1914', '1942', '1965', '1981'], correctAnswer: 2}, //what is the index position of the correct choice
+    choices: ['1914', '1942', '1968', '1981'], correctAnswer: 2}, //what is the index position of the correct choice
 
     {question: "What is the longest hiking trail in the USA?", choices: ["Appalachian Trail", "Continental Divide Trail", "Ozark Highlands Trail", "Pacific Crest Trail"], correctAnswer: 1},
     
