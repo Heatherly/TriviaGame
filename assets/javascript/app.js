@@ -48,6 +48,15 @@ function displayIncorrect() {
         $("#answerPic").html('<img class="answerPic" src="assets/images/' + triviaQuestions[currentQuestion].picture + '">');
 };
 
+//If wrong guess or no guess at all (time ran out)
+function displayTimesUp() {
+  clearScreen();
+    var selectedChoice = triviaQuestions[currentQuestion].choices
+    var theAnswer = triviaQuestions[currentQuestion].correctAnswer
+        $("#answer").html("Time's up! The correct answer was: " + selectedChoice[theAnswer]);
+        $("#answerPic").html('<img class="answerPic" src="assets/images/' + triviaQuestions[currentQuestion].picture + '">');
+};
+
 //Clear divs function
 function clearScreen() {
   $("#answer").empty()
@@ -58,9 +67,9 @@ function clearScreen() {
 
 //Timer Countdown object. Modeled after stopwatch exercise
 var timeCountdown = {
-  time: 10,
+  time: 15,
   reset: function() {
-    timeCountdown.time = 10;
+    timeCountdown.time = 15;
     $("#countdown").html("Seconds Remaining: " + timeCountdown.time);
     clearInterval(intervalId);
     clockRunning = false;
@@ -86,7 +95,7 @@ var timeCountdown = {
         timeCountdown.stop();
         unanswered++;
         clearScreen();
-        displayIncorrect();
+        displayTimesUp();
         nextQuestion();
       }
     $("#countdown").html("Seconds Remaining: " + currentTime);
@@ -126,12 +135,12 @@ function nextQuestion() {
         displayCurrentQuestion()//runs first
         timeCountdown.reset();//runs second
         timeCountdown.start();//runs third
-        },3000); //wait 5 seconds
+        },4000); //wait 5 seconds
 
      } else {
         setTimeout(function(){
         displayScore();
-        },3000); //wait 5 seconds
+        },4000); //wait 5 seconds
     }
 };
 
@@ -143,7 +152,7 @@ function displayScore () {
 };
 
 function newGame() {
-  $("#answer").html('<button id="newGameBtn">New Game?</button>')
+  $("#answer").html('<button id="newGameBtn">Try Again?</button>')
   $("#newGameBtn").on("click", function() {
       $("#countdown").empty();
       correct = 0;
@@ -152,7 +161,7 @@ function newGame() {
       currentQuestion = 0;
       intervalId;
       clockRunning = false;
-      timeCountdown.time = 11;
+      timeCountdown.time = 15;
       displayCurrentQuestion();
       timeCountdown.start();
     });
